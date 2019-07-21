@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+body{
+    background-image: url('https://i2.wp.com/www.nustm.org/wp-content/uploads/2017/06/background-image-html.jpg?fit=1920%2C1200&ssl=1');
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: red;
+}
+
+h4{
+    color: red;
+}
+
+input{
+    height: 20px;
+    width: 200px;
+}
+
+button {
+    background-color: transparent;
+    border-color: red;
+    border-radius: 3px;
+    color: red;
+    padding: 10px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 25px 2px 0px 0px;
+    cursor: pointer;
+  }
+
+textarea{
+    width: 200px;
+    height: 60px;
+}
+
+
+#headerLogo{
+    max-height: 50px;
+    max-width: 185px;
+    text-align: center;
+}
+
+header{
+    height: 8%;
+    margin: 10px;
+    width: 100%;
+} 
+
+header.logo{
+    position: absolute;
+}
+
+footer .author{
+    height: 5%;
+    color: darkgreen;
+    margin-right: 2%;
+}
+
+footer .copyrights{
+    height: 5%;
+    color: red;
+}
+
+.summary-box{
+    border: 1px;
+    border-color: grey;
+    border-style: solid;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 10px 5px;
+}
+
+.inline{
+    display:inline-block;
+}
+
+.right{
+    float: right;
+}
+
+.text-align-right{
+    text-align: right;
+}
+
+.underline{
+    text-decoration: underline
+}
+
+.hsn-qty{
+    padding: 5px 0px;
+}
+
+.product-name{
+    color: white;
+    font-style: bold;
+    padding: 5px 0px;
+}
+
+.total{
+    color: white;
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet" type="text/css" media="screen" href="../css/styles.css")
+        title Home Page
+    body
+        header
+            div(class="container")
+                a(class="logo" title="Babbelen")
+                    img(id="headerLogo" src="../images/logo.png" title="Babbelen")
+        div(id="content")
+            form(action="/login" method="POST" id="login")
+                h4 Mobile Number
+                input(type="text" name="mobileNumber")
+                button(onclick='document.getElementById("login").submit();') Login
+        footer
+            span(class="author") Author: GuruVi
+            br
+            span(class="copyrights") Babbellen &copy;All Rights reserved.

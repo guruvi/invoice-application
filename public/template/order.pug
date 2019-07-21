@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet" type="text/css" media="screen" href="../css/styles.css")
+        title Create Orders
+        script(src="../script/orders.js")
+        script(src="http://code.jquery.com/jquery-latest.min.js")
+    body
+        header
+            div(class="container")
+                a(class="logo" title="Babbelen")
+                    img(id="headerLogo" src="../images/logo.png" title="Babbelen")
+        div(class="content")
+            if data.orderNumber
+                h3 Order Number: B-#{data.orderNumber}
+            form(id="createOrder" action="/orders" method="POST")
+                h4 Customer Mobile Number
+                input(type="text" name="customerMobileNumber" value=`${data.customerMobileNumber||""}`)
+                h4 Bill Date
+                input(type="text" name="billDate" value=`${data.billDate||""}`)
+                input(type="hidden" id="productJSON" name="productJSON")
+                input(type="hidden" id="order_summary" name="orderSummary")
+                div
+                if !data.orderNumber
+                    button(onClick="document.getElementById('createOrder').submit();") Create Order
+                else
+                    button Print Order
+            h4(script onClick="toggleDivDisplay(this, 'orderSummary');") + Order Summary
+            div(id="orderSummary" class ="summary-box" style="display:none;")
+                div Total Value before GST : 
+                    span(id="totalValueBeforeGST") #{data.orderSummary ? data.orderSummary.totalValueBeforeGST : '0.00'}
+                div Total GST tax : 
+                    span(id="totalGST") #{data.orderSummary ? data.orderSummary.totalGST : '0.00'}
+                div SGST: 
+                    span(id="sgst") #{data.orderSummary ? data.orderSummary.sgst : '0.00'}
+                div CGST: 
+                    span(id="cgst") #{data.orderSummary ? data.orderSummary.cgst : '0.00'}
+                div Round off : 
+                    span(id="roundOff") #{data.orderSummary ? data.orderSummary.roundOff : '0.00'}
+                div Total value with GST : 
+                    span(id="totalBeforeRoundOff") #{data.orderSummary ? data.orderSummary.totalBeforeRoundOff : '0.00'}
+                div Total Amount : 
+                    span(id="totalAfterRoundOff") #{data.orderSummary ? data.orderSummary.totalAfterRoundOff : '0.00'}
+        if  !data.orderNumber
+            div(id="productList")
+            h4(script id="products_add" onClick="toggleDivDisplay(this, 'productForm');") + Add Products
+            div(id="productForm" style="display:none;")
+                h4 HSN
+                input(type="text" id="hsn" name="hsn")
+                h4 Product Name
+                input(type="text" id="productName" name="productName")
+                h4 Qty
+                input(type="text" id="qty" name="qty" value="1" onfocusout="calculateTax();")
+                h4 Rate
+                input(type="text" id="rate" name="rate" onfocusout="calculateTax();")
+                h4 GST Percent
+                input(type="text" id="gstPercent" name="gstPercent" value="18" onfocusout="calculateTax();")
+                h4 SGST amount
+                input(type="text" id="sgstAmt" name="sgstAmount" disabled)
+                h4 CGST amount
+                input(type="text" id="cgstAmt" name="cgstAmount" disabled)
+                h4 total
+                input(type="text" id="total" name="total" disabled)
+                br
+                button(onclick='formProductData();') Add
+
+        if data.productDetails
+            each product, index in data.productDetails
+                div(id="productList")
+                    div(class="summary-box" id=`product_${index+1}`)
+                        div(id=`remove_${index+1}` class="right underline" onClick=`removeProduct(${index+1});`) Remove
+                        br
+                        div(class="hsn-qty")
+                            div(class="inline") HSN:
+                                span(id=`hsn_${index+1}`) #{product.hsn}
+                            div(class="inline right") Qty: #{product.qty}
+                        div(class="product-details")
+                            div(class="product-name")
+                                b #{product.productName}
+                        div(class="inline") GST: #{product.gstPercent}
+                        div(class="inline right") Rate: #{product.rate}
+                        br
+                        div(class="tax-total")
+                            div SGST: #{product.sgstAmt}
+                            div CGST: #{product.cgstAmt}
+                            br
+                            div Total: #{product.total}
+                    
+
+                    

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    title Print document
+  body
+    div(id="body" style="width: 1000px;")
+      div(id="billHeader" style="padding: 10px; border-style: solid; border-width: 1px;")
+        div(style="text-align: center;") #{data.shop.shopName}
+          br
+          span #{data.shop.address}, #{data.shop.city}
+          br
+          span 
+            b GSTIN: #{data.shop.gstin}
+          br
+        div MOBILE NO: #{data.shop.mobileNumber}, EMAIL: #{data.shop.email}
+      div(id="billing" style="height: auto;border-style: solid;border-width: 0px 1px 1px 1px;")  
+        div(id="billDetails" style="padding: 0px 5px; width: 35%; display: inline-grid; height: 100%;position: relative;")
+          div
+            b Bill No&nbsp;&nbsp;&nbsp;A/#{data.order.orderNumber}
+            span(style="float:right;")
+              b Customer:
+            br 
+          span Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#{data.order.billDate}
+          b Terms
+        div(id="billingAddress" style="padding: 0px 5px; display: inline-grid;width: 60%;word-wrap: break-word ;border-left: solid 1px #000;")
+          span #{data.customer.customerName}
+          span #{data.customer.address} #{data.customer.city}
+          b
+          span GSTIN: #{data.shop.gstin}
+          div MOBILE NO: #{data.customer.mobileNumber}
+      div(id="productArea" style="border-style: solid; border-width: 0px 1px 1px 1px;")
+        table(style="width: 100%;")
+          tr 
+            th(width="2%") SN
+            th(width="8%") HSN
+            th(width="32%") Product Name
+            th(width="8%") Qty
+            th(width="10%") Rate
+            th(width="10%") GST %
+            th(width="10%") SGST amt
+            th(width="10%") CGST amt
+            th(width="10%") Total
+          each products, index in data.order.productDetails
+            tr 
+              td(style="text-align:center; border: solid 2px lightgrey;" width="2%") #{index+1}
+              td(style="text-align:center; border: solid 2px lightgrey;" width="8%") #{products.hsn}
+              td(style="text-align:center; border: solid 2px lightgrey;" width="32%") #{products.productName}
+              td(style="text-align:center; border: solid 2px lightgrey;" width="8%") #{products.qty}
+              td(style="text-align:center; border: solid 2px lightgrey;" width="10%") #{products.rate}
+              td(style="text-align:center; border: solid 2px lightgrey;" width="10%") #{products.gstPercent}
+              td(style="text-align:right; border: solid 2px lightgrey;" width="10%") #{products.sgstAmt}
+              td(style="text-align:right; border: solid 2px lightgrey;" width="10%") #{products.cgstAmt}
+              td(style="text-align:right; border: solid 2px lightgrey;" width="10%") #{products.total}
+          each number in [1,2,3]
+            tr
+              td
+              td
+              td
+              td
+              td
+              td
+              td
+              td
+              td
+          tr
+            td
+            td
+            td
+            td
+            td
+            td
+            td(style="text-align: right;") #{data.order.orderSummary.sgst}
+            td(style="text-align: right;") #{data.order.orderSummary.cgst}
+            td(style="text-align: right;") #{data.order.orderSummary.totalBeforeRoundOff}
+      div(id="amtSection" style="border-style: solid; border-width: 0px 1px 1px 1px;")
+        div(style="width: 50%; display: inline-block; border-style: solid; border-width: 0px 1px 0px 0px;") Rupees: #{data.totalValueInText}
+        div(style="display: inline-block; width: 30%; border-style: solid; border-width: 0px 1px 0px 0px; text-align: center;")
+          b Total Value before GST
+        div(style="display: inline-block; width: 19%; text-align: right;") #{data.order.orderSummary.totalValueBeforeGST}
+      div(id="taxSection" style="height: 70px; border-style: solid; border-width: 0px 1px 1px 1px;")
+        div(id="gstSplitSection" style="width: 50%; display: inline-block; border-style: solid; border-width: 0px 1px 0px 0px; ") GST 18% on(#{data.order.orderSummary.totalValueBeforeGST})- SGST 9.00%- #{data.order.orderSummary.sgst}- CGST 9.00%- #{data.order.orderSummary.cgst}
+        div(style="display: inline-block; width: 30%; border-style: solid; border-width: 0px 1px 0px 0px; text-align: right;") Total GST Tax
+          br
+          span Round off
+          br
+          br
+          b Total Amount
+        div(id="amountSection" style="display: inline-block; text-align: right; width: 19%") #{(data.order.orderSummary.sgst+ data.order.orderSummary.cgst).toFixed(2)}
+          br
+          span #{data.order.orderSummary.roundOff}
+          br
+          br
+          b #{data.order.orderSummary.totalAfterRoundOff}
+      div(id="billFooter" style="height: auto;border-style: solid; border-width: 0px 1px 1px 1px;")
+        div(id="bankDetails" style="padding: 0px 5px; width: 49%; display: inline-grid; height: 100%;position: relative;")
+          div
+            b BANK NAME : #{data.shop.bankName}
+          div
+            b A/C NO : #{data.shop.accNo}
+        div(id="signature" style="text-align: center; padding: 0px 5px; display: inline-grid;width: 48%;word-wrap: break-word ;border-left: solid 1px #000;")
+          span For #{data.shop.shopName}
+          br
+          br
+          br
+
