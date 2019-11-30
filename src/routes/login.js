@@ -2,7 +2,7 @@ const fastifyPlugin = require("fastify-plugin");
 
 const loginAPI = (fastify, options, next) => {
     fastify.get("/login", (request, reply)=>{
-        reply.view('/public/template/login.pug');
+        return reply.view('/public/template/login.pug');
     });
 
     fastify.post("/login", async (request, reply)=>{
@@ -10,9 +10,9 @@ const loginAPI = (fastify, options, next) => {
         const shopDetails = await fastify.shopRepository.validate(shopId);
         if(shopDetails){
             reply.setCookie('shopId', shopDetails.mobileNumber, {path: '/'});
-            reply.view('/public/template/home.pug', { data: shopDetails, shopId: shopDetails.mobileNumber });
+            return reply.view('/public/template/home.pug', { data: shopDetails, shopId: shopDetails.mobileNumber });
         } else {
-            reply.view('/public/template/shopDetails.pug', { data: ""});
+            return reply.view('/public/template/shopDetails.pug', { data: ""});
         }
     });
 

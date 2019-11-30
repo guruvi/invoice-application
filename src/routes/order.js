@@ -81,12 +81,33 @@ const ordersAPI = (fastify, options, next) => {
             where order_number = ${orderNumber}`;
     };
 
+    const generateOrderNumber = async () => {
+        console.log("asdflk;jasdlf;j")
+        const sql = SQL`SELECT
+                            max(order_number) AS "orderNumber"
+                        FROM
+                            "order"`;
+        const response = await fastify.pg.query(sql);
+        const orderNumber = response.rowCount > 0 ? (response.rows[0].orderNumber+1) : 1;
+        if(!fastify.hasDecorator("orderNumber")){
+            fastify.decorate("orderNumber", orderNumber);
+        }
+        return orderNumber;
+    }
+
     const insert = async (order) => {
         const orderSummary = order.orderSummary;
-
+        let orderNumber = 0;
+        if(isNaN(fastify.orderNumber)){
+            orderNumber = await generateOrderNumber();
+        } else {
+            orderNumber = ++fastify.orderNumber;
+            fastify.orderNumber = orderNumber;
+        }
         try{
             const sql = SQL`INSERT INTO "order" 
                             (
+                                order_number,
                                 shop_mobile_number,
                                 bill_date,
                                 customer_mobile_number,
@@ -95,6 +116,7 @@ const ordersAPI = (fastify, options, next) => {
                             )
                             values 
                             (
+                                ${orderNumber},
                                 ${order.shopMobileNumber || null},
                                 ${order.billDate || null},
                                 ${order.customerMobileNumber || null},

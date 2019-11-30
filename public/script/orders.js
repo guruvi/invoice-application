@@ -15,6 +15,11 @@ function resetOrder() {
 
 let order = resetOrder();
 
+function printUrl(orderNumber){
+    const url = location.href + "/print?orderNumber=" + orderNumber;
+    location.href = url;
+}
+
 function toggleDivDisplay(element, div){
     const displaySettings = document.getElementById(div).style.display;
     let display = "";

@@ -2,11 +2,11 @@
   "name": "invoice-application",
   "version": "1.0.0",
   "description": "Application to generate invoice",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node src/db-config/scripts/config.js && node server.js",
     "db-init": "node src/db-config/scripts/config.js",
-    "dev": "nodemon index.js | pino-pretty -c -t HH:MM:ss.l"
+    "dev": "nodemon server.js | pino-pretty -c -t HH:MM:ss.l"
   },
   "author": "",
   "license": "ISC",
@@ -21,7 +21,7 @@
     "fastify-postgres": "^2.0.0",
     "fastify-static": "^2.5.0",
     "i": "^0.3.6",
-    "npm": "^6.10.0",
+    "npm": "^6.13.0",
     "path": "^0.12.7",
     "pg": "^7.11.0",
     "pg-camelcase": "0.0.3",

@@ -46,13 +46,13 @@ const customerAPI = (fastify, options, next) => {
                 email = ${email}`;
 
         const result = await fastify.pg.query(query);
-        reply.view('/public/template/home.pug', { data: ""});        
+        return reply.view('/public/template/home.pug', { data: ""});        
     });
 
     fastify.get("/customers", async (request, reply)=>{
         const shopId = request.cookies.shopId;
         const data = {  shopId };
-        reply.view('/public/template/customerDetails.pug', { data: {shopId} } );        
+        return reply.view('/public/template/customerDetails.pug', { data: {shopId} } );        
     });
 
     const validate = async (shopId) => {

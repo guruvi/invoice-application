@@ -59,12 +59,12 @@ const postgrator = new Postgrator({
   schemaTable: "schemaversion"
 });
 
-postgrator.on('migration-started', () => console.log("migration started"));
+postgrator.on('migration-started', () => console.log("migration started", config));
 postgrator.on('migration-finished', () => console.log("migration finished"));
 
 postgrator
   .migrate()
   .then(appliedMigrations => console.log(appliedMigrations))
-  .catch(error => console.log(error));
+  .catch(error => { console.log(config); console.log(error); });
 
 

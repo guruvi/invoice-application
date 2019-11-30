@@ -25,9 +25,10 @@ html(lang="en")
                 input(type="hidden" id="order_summary" name="orderSummary")
                 div
                 if !data.orderNumber
-                    button(onClick="document.getElementById('createOrder').submit();") Create Order
+                    button(type="button" onClick="document.getElementById('createOrder').submit();") Create Order
                 else
-                    button Print Order
+                    button
+                        a(href=`/orders/print?orderNumber=${data.orderNumber}`) Print Order
             h4(script onClick="toggleDivDisplay(this, 'orderSummary');") + Order Summary
             div(id="orderSummary" class ="summary-box" style="display:none;")
                 div Total Value before GST : 

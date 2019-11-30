@@ -1,5 +1,5 @@
 CREATE TABLE "order" (
-	order_number SERIAL,
+	order_number integer,
     shop_mobile_number text,
     bill_date text,
     customer_mobile_number text,

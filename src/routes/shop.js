@@ -5,7 +5,7 @@ const shopAPI = (fastify, options, next) => {
 
     fastify.get("/shop", async(request, reply)=>{
         const shopDetails = await validate(request.cookies.shopId);
-        reply.view('/public/template/shopDetails.pug', { data: shopDetails});     
+        return reply.view('/public/template/shopDetails.pug', { data: shopDetails});
     });
 
     fastify.post("/shop", async (request, reply)=>{
@@ -51,7 +51,7 @@ const shopAPI = (fastify, options, next) => {
 
         const result = await fastify.pg.query(query);
         reply.setCookie('shopId', mobileNumber, {path: '/'});
-        reply.view('/public/template/home.pug', { data: ""});        
+        return reply.view('/public/template/home.pug', { data: ""});
     });
 
     const validate = async (shopId) => {
