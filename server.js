@@ -60,7 +60,7 @@ const start = async () => {
       fastify.register(fastifyAutoload, {
         dir: path.join(__dirname, 'src/routes')
       });
-      await fastify.listen(3000, "0.0.0.0");
+      await fastify.listen(80, "0.0.0.0");
       fastify.log.info(`server listening on ${fastify.server.address().port}`);
     } catch (err) {
       fastify.log.error(err);
