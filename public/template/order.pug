@@ -26,10 +26,12 @@ html(lang="en")
                 div
                 if !data.orderNumber
                     button(type="button" onClick="document.getElementById('createOrder').submit();") Create Order
-                else
+                if data.mode
+                    button(type="button" onClick=``) Save Order
+                else if !data.mode && data.orderNumber
                     button
                         a(href=`/orders/print?orderNumber=${data.orderNumber}`) Print Order
-            h4(script onClick="toggleDivDisplay(this, 'orderSummary');") + Order Summary
+            h4(script onClick="toggleDivDisplay('orderSummary');") + Order Summary
             div(id="orderSummary" class ="summary-box" style="display:none;")
                 div Total Value before GST : 
                     span(id="totalValueBeforeGST") #{data.orderSummary ? data.orderSummary.totalValueBeforeGST : '0.00'}
@@ -45,9 +47,9 @@ html(lang="en")
                     span(id="totalBeforeRoundOff") #{data.orderSummary ? data.orderSummary.totalBeforeRoundOff : '0.00'}
                 div Total Amount : 
                     span(id="totalAfterRoundOff") #{data.orderSummary ? data.orderSummary.totalAfterRoundOff : '0.00'}
-        if  !data.orderNumber
+        if  !data.orderNumber || data.mode
             div(id="productList")
-            h4(script id="products_add" onClick="toggleDivDisplay(this, 'productForm');") + Add Products
+            h4(script id="products_add" onClick="addProducts(this);") + Add Products
             div(id="productForm" style="display:none;")
                 h4 HSN
                 input(type="text" id="hsn" name="hsn")
@@ -65,24 +67,31 @@ html(lang="en")
                 input(type="text" id="cgstAmt" name="cgstAmount" disabled)
                 h4 total
                 input(type="text" id="total" name="total" disabled)
+                input(type="hidden" id="serial" name="serial" value="" disabled)
                 br
-                button(onclick='formProductData();') Add
+                button(id="add" onclick='formProductData();') Add
+                button(id="edit" onclick='updateProductData();' style="display:none;") Update
 
         if data.productDetails
             each product, index in data.productDetails
                 div(id="productList")
                     div(class="summary-box" id=`product_${index+1}`)
-                        div(id=`remove_${index+1}` class="right underline" onClick=`removeProduct(${index+1});`) Remove
+                        div
+                            span(id=`edit_${index+1}` class="underline" onClick=`editProduct(${index+1});`) Edit
+                            span(id=`remove_${index+1}` class="right underline" onClick=`removeProduct(${index+1});`) Remove
                         br
                         div(class="hsn-qty")
                             div(class="inline") HSN:
                                 span(id=`hsn_${index+1}`) #{product.hsn}
-                            div(class="inline right") Qty: #{product.qty}
+                            div(class="inline right") Qty:
+                                span(id=`qty_${index+1}`) #{product.qty}
                         div(class="product-details")
                             div(class="product-name")
-                                b #{product.productName}
+                                b
+                                    span(id=`name_${index+1}`) #{product.productName}
                         div(class="inline") GST: #{product.gstPercent}
-                        div(class="inline right") Rate: #{product.rate}
+                        div(class="inline right") Rate:
+                                span(id=`rate_${index+1}`) #{product.rate}
                         br
                         div(class="tax-total")
                             div SGST: #{product.sgstAmt}

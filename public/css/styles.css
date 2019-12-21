@@ -86,7 +86,8 @@ footer .copyrights{
 }
 
 .underline{
-    text-decoration: underline
+    text-decoration: underline;
+    color: grey;
 }
 
 .hsn-qty{

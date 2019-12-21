@@ -31,7 +31,12 @@ const ordersAPI = (fastify, options, next) => {
         if (request.query.orderNumber){
             order = await getByOrderNumber(request.query.orderNumber);
         }
-        reply.view('/public/template/order.pug', {data: { ...order}});        
+        console.log(order);
+        reply.view('/public/template/order.pug', {data: { ...order, mode: request.query.mode }});
+    });
+
+    fastify.get("/orders/edit", async (request, reply) => {
+        reply.view('/public/template/editOrder.pug', {data: {}});
     });
 
     fastify.get("/orders/print", async(request, reply)=> {
@@ -82,7 +87,6 @@ const ordersAPI = (fastify, options, next) => {
     };
 
     const generateOrderNumber = async () => {
-        console.log("asdflk;jasdlf;j")
         const sql = SQL`SELECT
                             max(order_number) AS "orderNumber"
                         FROM

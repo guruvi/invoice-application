@@ -14,13 +14,14 @@ function resetOrder() {
 };
 
 let order = resetOrder();
+let productCount = order.productCount;
 
 function printUrl(orderNumber){
     const url = location.href + "/print?orderNumber=" + orderNumber;
     location.href = url;
 }
 
-function toggleDivDisplay(element, div){
+function toggleDivDisplay(div){
     const displaySettings = document.getElementById(div).style.display;
     let display = "";
     if(displaySettings === "none"){
@@ -29,15 +30,11 @@ function toggleDivDisplay(element, div){
         display = "none";
     }
     document.getElementById(div).style.display = display;
-    if(element.innerHTML.indexOf("+")==0){
-        element.innerHTML = element.innerHTML.replace("+", "-");
-    } else {
-        element.innerHTML = element.innerHTML.replace("-", "+");
-    }
 }
 
 function setOrderSummaryDisplay(productList){
     order = resetOrder();
+    order.productCount = productCount;
     productList.forEach(product => {
         order.sgst += parseFloat(product.sgstAmt);
         order.cgst += parseFloat(product.cgstAmt);
@@ -66,19 +63,41 @@ function removeProduct(count){
     setOrderSummaryDisplay(newProductList);
 }
 
+function editProduct(count){
+    resetProductForm();
+    const hsn  = document.getElementById("hsn_"+count).innerHTML;
+    const qty  = document.getElementById("qty_"+count).innerHTML;
+    const productName = document.getElementById("name_"+count).innerHTML;
+    const rate = document.getElementById("rate_"+count).innerHTML;
+    document.getElementById("hsn").value = hsn;
+    document.getElementById("productName").value = productName;
+    document.getElementById("qty").value = qty;
+    document.getElementById("rate").value = rate;
+    document.getElementById("serial").value = count;
+    document.getElementById('edit').style.display = "block";
+    document.getElementById('add').style.display = "none";
+    togglePlus('products_add');
+    toggleDivDisplay('productForm');
+    document.getElementById("rate").focus();
+}
+
 function addHTMLString(data, count){
     let htmlString = 
     '<div class ="summary-box" id="product_'+count+'">'+
-        '<div id="remove_'+count+'" class="right underline" onClick="removeProduct('+count+');">Remove</div>'+
+        '<div>'+
+        '<span id="edit_'+count+'" class="underline" onClick="editProduct('+count+');">Edit</span>'+
+        '<span id="remove_'+count+'" class="right underline" onClick="removeProduct('+count+');">Remove</span>'+
+        '</div>'+
         '<br><div class="hsn-qty">'+
         '<div class="inline">HSN: <span id="hsn_'+count+'">${HSN}</span></div>'+
-        '<div class="inline right">Qty: ${Qty}</div>'+
+        '<div class="inline right">Qty: <span id="qty_'+count+'">${Qty}</span></div>'+
         '</div><div class="product-details"><div class="product-name">'+
-        '<b>${productName}</b></div><div class="inline">'+
-        'GST: ${GST}</div><div class="inline right"> Rate:'+
-        '${rate}</div></div><br><div class="tax-total"><div>SGST :'+
-        '${sgst}</div><div>CSGST: ${cgst}</div><br>'+
-        '<div>Total: ${total}</div></div></div>';
+        '<b><span id="name_'+count+'">${productName}</span></b></div><div class="inline">'+
+        'GST: <span id="gst_'+count+'">${GST}</span></div><div class="inline right"> Rate:'+
+        '<span id="rate_'+count+'">${rate}</span></div></div><br><div class="tax-total"><div>SGST :'+
+        '<span id="sgst_'+count+'">${sgst}</span></div><div>CSGST: <span id="cgst_'+count+'">${cgst}'+
+        '</span></div><br>'+
+        '<div>Total: <span id="total_'+count+'">${total}</span></div></div></div>';
     htmlString = htmlString.replace("${HSN}", data.hsn);
     htmlString = htmlString.replace("${productName}", data.productName);
     htmlString = htmlString.replace("${Qty}", data.qty);
@@ -87,19 +106,25 @@ function addHTMLString(data, count){
     htmlString = htmlString.replace("${sgst}", data.sgstAmt);
     htmlString = htmlString.replace("${cgst}", data.cgstAmt);
     htmlString = htmlString.replace("${total}", data.total);
-    addProductJSON(data);
-    let htmlElement = document.getElementById("productList").innerHTML;
-    htmlElement = htmlElement + htmlString;
-    document.getElementById("productList").innerHTML = htmlElement;
+    data.serial = count;
+    addProductJSON(data, count);
+    return htmlString;
 }
 
-function addProductJSON(product){
+function addProductJSON(product, count){
     let products = [];
     let productJSON = document.getElementById("productJSON").value;
     if(productJSON === ""){
         products.push(product);
     }else{
         products = JSON.parse(productJSON);
+        let arrayIndex = -1;
+        products.forEach((product, index) => {
+            if(product.serial == count) arrayIndex = index;
+        });
+        if(arrayIndex != -1){
+            products.splice(arrayIndex, 1);
+        }
         products.push(product);
     }
     document.getElementById("productJSON").value = JSON.stringify(products);
@@ -114,6 +139,33 @@ function removeProductFromJSON(productToRemove){
     document.getElementById("productJSON").value = products;
 }
 
+function togglePlus(element='products_add') {
+    element = document.getElementById(element);
+    if(element.innerHTML.indexOf("+")==0){
+        element.innerHTML = element.innerHTML.replace("+", "-");
+    } else {
+        element.innerHTML = element.innerHTML.replace("-", "+");
+    }
+}
+
+function addProducts(element) {
+    toggleDivDisplay('productForm');
+    togglePlus();
+    resetProductForm();
+    document.getElementById("add").style.display = "block";
+    document.getElementById("edit").style.display = "none";
+}
+
+function resetProductForm(){
+    document.getElementById('hsn').value='';
+    document.getElementById('productName').value='';
+    document.getElementById('qty').value='';
+    document.getElementById('rate').value='';
+    document.getElementById('sgstAmt').value='';
+    document.getElementById('cgstAmt').value='';
+    document.getElementById('total').value='';
+}
+
 function calculateTax(){
     const rate = document.getElementById("rate").value;
     const qty = document.getElementById("qty").value;
@@ -123,7 +175,26 @@ function calculateTax(){
     document.getElementById("total").value= (qty*rate*((gstPercent/2)/100)*2 + qty*rate).toFixed(2);
 }
 
-function formProductData(){
+function updateProductData(){
+    const product = getProductData();
+    console.log(product);
+    addProductJSON(product,product.serial);
+    let count = product.serial;
+    document.getElementById("hsn_"+count).innerHTML = product.hsn;
+    document.getElementById("qty_"+count).innerHTML = product.qty;
+    document.getElementById("name_"+count).innerHTML = product.productName;
+    document.getElementById("rate_"+count).innerHTML = product.rate;
+    document.getElementById("gst_"+count).innerHTML = product.gstPercent;
+    document.getElementById("sgst_"+count).innerHTML = product.sgstAmt;
+    document.getElementById("cgst_"+count).innerHTML = product.cgstAmt;
+    document.getElementById("total_"+count).innerHTML = product.total;
+    togglePlus();
+    toggleDivDisplay('productForm');
+}
+
+
+
+function getProductData() {
     const hsn = document.getElementById("hsn").value;
     const productName = document.getElementById("productName").value;
     const qty = document.getElementById("qty").value;
@@ -132,6 +203,7 @@ function formProductData(){
     const cgstAmt = document.getElementById("cgstAmt").value;
     const sgstAmt = document.getElementById("sgstAmt").value;
     const total = document.getElementById("total").value;
+    const serial = document.getElementById("serial").value;
     const productData = {
         hsn,
         productName,
@@ -140,8 +212,17 @@ function formProductData(){
         gstPercent,
         cgstAmt,
         sgstAmt,
-        total
+        total,
+        serial
     };
-    addHTMLString(productData, order.productCount++);
-    toggleDivDisplay(document.getElementById('products_add'),'productForm');
+    return productData;
+}
+
+function formProductData(){
+    const htmlString = addHTMLString(getProductData(), productCount++);
+    togglePlus();
+    toggleDivDisplay('productForm');
+    let htmlElement = document.getElementById("productList").innerHTML;
+    htmlElement = htmlElement + htmlString;
+    document.getElementById("productList").innerHTML = htmlElement;
 }
