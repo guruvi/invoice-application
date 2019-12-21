@@ -39,6 +39,46 @@ const ordersAPI = (fastify, options, next) => {
         reply.view('/public/template/editOrder.pug', {data: {}});
     });
 
+    fastify.post("/orders/edit", async (request, reply) => {
+        try{
+            const shopMobileNumber = request.cookies.shopId;
+            const customerMobileNumber = request.body.customerMobileNumber;
+            const billDate = request.body.billDate;
+            const productDetails = request.body.productJSON;
+            const orderNumber = request.body.orderNumber;
+            const orderSummary = request.body.orderSummary;
+            const order = {
+                shopMobileNumber,
+                billDate,
+                customerMobileNumber,
+                productDetails: JSON.parse(productDetails),
+                orderSummary
+            };
+            const response = await update(orderNumber, order);
+            reply.view('/public/template/order.pug', {data: {...response}});
+        } catch (error){
+            console.log(error);
+        }
+    });
+
+    const update = async (orderNumber, order) => {
+        try {
+            const sql = SQL`UPDATE
+                            "order" set
+                            bill_date = ${order.billDate},
+                            customer_mobile_number = ${order.customerMobileNumber},
+                            product_details = ${order.productDetails},
+                            order_summary = ${order.orderSummary}
+                            where order_number = ${orderNumber}
+                            RETURNING *`;
+            const response = await fastify.pg.query(sql);
+            response.rowCount > 0 ? response.rows[0] : null;
+            return response.rows[0];
+        } catch (err) {
+            console.log(error);
+        }
+    };
+
     fastify.get("/orders/print", async(request, reply)=> {
         const orderNumber = request.query.orderNumber;
         order = await getByOrderNumber(orderNumber);
@@ -70,20 +110,6 @@ const ordersAPI = (fastify, options, next) => {
                     FROM "order" where order_number = ${orderNumber}`;
         const result = await fastify.pg.query(sql);
         return result.rows[0];
-    };
-
-    const update = async (orderNumber) => {
-        const sql = SQL`UPDATE order set 
-            shop_mobile_number = ${order.shopMobileNumber}, 
-            bill_date = ${order.billDate}, 
-            customer_mobile_number = ${order.customerMobileNumber}, 
-            product_details = ${order.productDetails}, 
-            sgst = ${order.sgst}, 
-            cgst = ${order.cgst}, 
-            gst_percent  = ${order.gstPercent}, 
-            total_before_gst = ${order.totalBeforeGst}, 
-            total = ${order.total}
-            where order_number = ${orderNumber}`;
     };
 
     const generateOrderNumber = async () => {

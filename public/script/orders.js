@@ -118,11 +118,12 @@ function addProductJSON(product, count){
         products.push(product);
     }else{
         products = JSON.parse(productJSON);
-        let arrayIndex = -1;
-        products.forEach((product, index) => {
-            if(product.serial == count) arrayIndex = index;
+        let arrayIndex = -1, serial = 0;
+        products.forEach((itm, index) => {
+            if(itm.serial == count) { arrayIndex = index; serial = itm.serial; }
         });
         if(arrayIndex != -1){
+            product.serial = serial;
             products.splice(arrayIndex, 1);
         }
         products.push(product);

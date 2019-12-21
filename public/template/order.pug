@@ -16,18 +16,22 @@ html(lang="en")
         div(class="content")
             if data.orderNumber
                 h3 Order Number: B-#{data.orderNumber}
-            form(id="createOrder" action="/orders" method="POST")
+            form(id="createOrder" action=`${data.orderNumber ? "/orders/edit" : "/orders"}` method="POST")
                 h4 Customer Mobile Number
                 input(type="text" name="customerMobileNumber" value=`${data.customerMobileNumber||""}`)
                 h4 Bill Date
                 input(type="text" name="billDate" value=`${data.billDate||""}`)
-                input(type="hidden" id="productJSON" name="productJSON")
+                if data.orderNumber
+                    input(type="hidden" id="productJSON" name="productJSON" value=`${JSON.stringify(data.productDetails)}`)
+                    input(type="hidden" name ="orderNumber" value = `${data.orderNumber}`)
+                if !data.orderNumber
+                    input(type="hidden" id="productJSON" name="productJSON" value=``)
                 input(type="hidden" id="order_summary" name="orderSummary")
                 div
                 if !data.orderNumber
                     button(type="button" onClick="document.getElementById('createOrder').submit();") Create Order
                 if data.mode
-                    button(type="button" onClick=``) Save Order
+                    button(type="button" onClick=`document.getElementById('createOrder').submit();`) Save Order
                 else if !data.mode && data.orderNumber
                     button
                         a(href=`/orders/print?orderNumber=${data.orderNumber}`) Print Order
@@ -47,6 +51,39 @@ html(lang="en")
                     span(id="totalBeforeRoundOff") #{data.orderSummary ? data.orderSummary.totalBeforeRoundOff : '0.00'}
                 div Total Amount : 
                     span(id="totalAfterRoundOff") #{data.orderSummary ? data.orderSummary.totalAfterRoundOff : '0.00'}
+
+        if data.productDetails
+            div(id="productList")
+                each product, index in data.productDetails
+                    div(class="summary-box" id=`product_${product.serial}`)
+                        div
+                            span(id=`edit_${product.serial}` class="underline" onClick=`editProduct(${product.serial});`) Edit
+                            span(id=`remove_${product.serial}` class="right underline" onClick=`removeProduct(${product.serial});`) Remove
+                        br
+                        div(class="hsn-qty")
+                            div(class="inline") HSN:
+                                span(id=`hsn_${product.serial}`) #{product.hsn}
+                            div(class="inline right") Qty:
+                                span(id=`qty_${product.serial}`) #{product.qty}
+                        div(class="product-details")
+                            div(class="product-name")
+                                b
+                                    span(id=`name_${product.serial}`) #{product.productName}
+                        div(class="inline") GST:
+                            span(id=`gst_${product.serial}`) #{product.gstPercent}
+                        div(class="inline right") Rate:
+                                span(id=`rate_${product.serial}`) #{product.rate}
+                        br
+                        div(class="tax-total")
+                            div SGST:
+                                span(id=`sgst_${product.serial}`) #{product.sgstAmt}
+                            div CGST:
+                                span(id=`cgst_${product.serial}`) #{product.cgstAmt}
+                            br
+                            div Total:
+                                span(id=`total_${product.serial}`) #{product.total}
+                                span(id =`serial_${product.serial}` style = "display: none;") #{product.serial}
+
         if  !data.orderNumber || data.mode
             div(id="productList")
             h4(script id="products_add" onClick="addProducts(this);") + Add Products
@@ -71,33 +108,4 @@ html(lang="en")
                 br
                 button(id="add" onclick='formProductData();') Add
                 button(id="edit" onclick='updateProductData();' style="display:none;") Update
-
-        if data.productDetails
-            each product, index in data.productDetails
-                div(id="productList")
-                    div(class="summary-box" id=`product_${index+1}`)
-                        div
-                            span(id=`edit_${index+1}` class="underline" onClick=`editProduct(${index+1});`) Edit
-                            span(id=`remove_${index+1}` class="right underline" onClick=`removeProduct(${index+1});`) Remove
-                        br
-                        div(class="hsn-qty")
-                            div(class="inline") HSN:
-                                span(id=`hsn_${index+1}`) #{product.hsn}
-                            div(class="inline right") Qty:
-                                span(id=`qty_${index+1}`) #{product.qty}
-                        div(class="product-details")
-                            div(class="product-name")
-                                b
-                                    span(id=`name_${index+1}`) #{product.productName}
-                        div(class="inline") GST: #{product.gstPercent}
-                        div(class="inline right") Rate:
-                                span(id=`rate_${index+1}`) #{product.rate}
-                        br
-                        div(class="tax-total")
-                            div SGST: #{product.sgstAmt}
-                            div CGST: #{product.cgstAmt}
-                            br
-                            div Total: #{product.total}
-                    
-
                     
