@@ -178,7 +178,6 @@ function calculateTax(){
 
 function updateProductData(){
     const product = getProductData();
-    console.log(product);
     addProductJSON(product,product.serial);
     let count = product.serial;
     document.getElementById("hsn_"+count).innerHTML = product.hsn;
