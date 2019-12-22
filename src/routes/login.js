@@ -5,6 +5,10 @@ const loginAPI = (fastify, options, next) => {
         return reply.view('/public/template/login.pug');
     });
 
+    fastify.get("/home", (request, reply)=>{
+        return reply.view('/public/template/home.pug');
+    });
+
     fastify.post("/login", async (request, reply)=>{
         const shopId = request.body.mobileNumber;
         const shopDetails = await fastify.shopRepository.validate(shopId);
