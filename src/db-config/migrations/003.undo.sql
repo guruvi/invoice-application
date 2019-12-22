@@ -1,0 +1,1 @@
+ALTER TABLE "order" DROP COLUMN bill_date_filter;

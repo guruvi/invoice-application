@@ -12,12 +12,14 @@ const ordersAPI = (fastify, options, next) => {
             const billDate = request.body.billDate;
             const productDetails = request.body.productJSON;
             const orderSummary = request.body.orderSummary;
+            const billDateFilter = request.body.billDate;
             const order = {
                 shopMobileNumber,
                 billDate,
                 customerMobileNumber,
                 productDetails: JSON.parse(productDetails),
-                orderSummary
+                orderSummary,
+                billDateFilter
             };
             const response = await insert(order);
             reply.view('/public/template/order.pug', {data: {...response}});
@@ -51,12 +53,14 @@ const ordersAPI = (fastify, options, next) => {
             const productDetails = request.body.productJSON;
             const orderNumber = request.body.orderNumber;
             const orderSummary = request.body.orderSummary;
+            const billDateFilter = request.body.billDate;
             const order = {
                 shopMobileNumber,
                 billDate,
                 customerMobileNumber,
                 productDetails: JSON.parse(productDetails),
-                orderSummary
+                orderSummary,
+                billDateFilter
             };
             const response = await update(orderNumber, order);
             reply.view('/public/template/order.pug', {data: {...response}});
@@ -72,14 +76,15 @@ const ordersAPI = (fastify, options, next) => {
                             bill_date = ${order.billDate},
                             customer_mobile_number = ${order.customerMobileNumber},
                             product_details = ${order.productDetails},
-                            order_summary = ${order.orderSummary}
+                            order_summary = ${order.orderSummary},
+                            bill_date_filter = ${order.billDateFilter}
                             where order_number = ${orderNumber}
                             RETURNING *`;
             const response = await fastify.pg.query(sql);
             response.rowCount > 0 ? response.rows[0] : null;
             return response.rows[0];
         } catch (err) {
-            console.log(error);
+            console.log(err);
         }
     };
 
@@ -146,7 +151,8 @@ const ordersAPI = (fastify, options, next) => {
                                 bill_date,
                                 customer_mobile_number,
                                 product_details,
-                                order_summary
+                                order_summary,
+                                bill_date_filter
                             )
                             values 
                             (
@@ -155,7 +161,8 @@ const ordersAPI = (fastify, options, next) => {
                                 ${order.billDate || null},
                                 ${order.customerMobileNumber || null},
                                 ${order.productDetails || []},
-                                ${orderSummary || {}}
+                                ${orderSummary || {}},
+                                ${order.billDateFilter}
                             )
                             RETURNING *`;
             const orders = await fastify.pg.query(sql);

@@ -14,7 +14,6 @@ function resetOrder() {
 };
 
 let order = resetOrder();
-let productCount = order.productCount;
 
 function printUrl(orderNumber){
     const url = location.href + "/print?orderNumber=" + orderNumber;
@@ -34,7 +33,7 @@ function toggleDivDisplay(div){
 
 function setOrderSummaryDisplay(productList){
     order = resetOrder();
-    order.productCount = productCount;
+    order.productCount = JSON.parse(document.getElementById("productJSON").value).length;;
     productList.forEach(product => {
         order.sgst += parseFloat(product.sgstAmt);
         order.cgst += parseFloat(product.cgstAmt);
@@ -219,7 +218,12 @@ function getProductData() {
 }
 
 function formProductData(){
-    const htmlString = addHTMLString(getProductData(), productCount++);
+    let count = 0;
+    const productJSON = document.getElementById("productJSON").value;
+    if(productJSON !== "") {
+        count = JSON.parse(productJSON).length;
+    }
+    const htmlString = addHTMLString(getProductData(), ++count);
     togglePlus();
     toggleDivDisplay('productForm');
     let htmlElement = document.getElementById("productList").innerHTML;
