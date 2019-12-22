@@ -20,7 +20,7 @@ html(lang="en")
                 h4 Customer Mobile Number
                 input(type="text" name="customerMobileNumber" value=`${data.customerMobileNumber||""}`)
                 h4 Bill Date
-                input(type="text" name="billDate" value=`${data.billDate||""}`)
+                input(type="date" name="billDate" value=`${data.billDate||""}`)
                 if data.orderNumber
                     input(type="hidden" id="productJSON" name="productJSON" value=`${JSON.stringify(data.productDetails)}`)
                     input(type="hidden" name ="orderNumber" value = `${data.orderNumber}`)

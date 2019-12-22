@@ -39,6 +39,10 @@ const ordersAPI = (fastify, options, next) => {
         reply.view('/public/template/editOrder.pug', {data: {}});
     });
 
+    fastify.get("/orders/printForm", async (request, reply) => {
+        reply.view('/public/template/orderPrintForm.pug', {data: {}});
+    });
+
     fastify.post("/orders/edit", async (request, reply) => {
         try{
             const shopMobileNumber = request.cookies.shopId;
