@@ -20,7 +20,7 @@ html(lang="en")
                 h3 Order Number: A-#{data.orderNumber}
             form(id="createOrder" action=`${data.orderNumber ? "/orders/edit" : "/orders"}` method="POST")
                 h4 Customer Mobile Number
-                input(type="text" name="customerMobileNumber" value=`${data.customerMobileNumber||""}`)
+                input(type="number" name="customerMobileNumber" value=`${data.customerMobileNumber||""}`)
                 h4 Bill Date
                 input(type="date" name="billDate" value=`${data.billDate||""}`)
                 if data.orderNumber
@@ -95,17 +95,17 @@ html(lang="en")
                 h4 Product Name
                 input(type="text" id="productName" name="productName")
                 h4 Qty
-                input(type="text" id="qty" name="qty" value="1" onfocusout="calculateTax();")
+                input(type="number" id="qty" name="qty" value="1" onfocusout="calculateTax();")
                 h4 Rate
-                input(type="text" id="rate" name="rate" onfocusout="calculateTax();")
+                input(type="number" id="rate" name="rate" onfocusout="calculateTax();")
                 h4 GST Percent
-                input(type="text" id="gstPercent" name="gstPercent" value="18" onfocusout="calculateTax();")
+                input(type="number" id="gstPercent" name="gstPercent" value="18" onfocusout="calculateTax();")
                 h4 SGST amount
-                input(type="text" id="sgstAmt" name="sgstAmount" disabled)
+                input(type="number" id="sgstAmt" name="sgstAmount" disabled)
                 h4 CGST amount
-                input(type="text" id="cgstAmt" name="cgstAmount" disabled)
+                input(type="number" id="cgstAmt" name="cgstAmount" disabled)
                 h4 total
-                input(type="text" id="total" name="total" disabled)
+                input(type="number" id="total" name="total" disabled)
                 input(type="hidden" id="serial" name="serial" value="" disabled)
                 br
                 button(id="add" onclick='formProductData();') Add

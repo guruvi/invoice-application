@@ -14,7 +14,7 @@ html(lang="en")
         div(id="content")
             form(action="/orders" method="get" id="editOrder")
                 h4 Order Number
-                input(type="text" name="orderNumber")
+                input(type="number" name="orderNumber")
                 input(type="hidden" name="mode" value="edit")
                 br
                 button(onclick='document.getElementById("editOrder").submit();') Edit Order

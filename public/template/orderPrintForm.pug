@@ -14,7 +14,7 @@ html(lang="en")
         div(id="content")
             form(action="/orders/print" method="GET" id="printOrder")
                 h4 Order Number
-                input(type="text" name="orderNumber")
+                input(type="number" name="orderNumber")
                 br
                 button(onclick='document.getElementById("printOrder").submit();') Print Order
                 br

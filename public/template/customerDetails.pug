@@ -15,7 +15,7 @@ html(lang="en")
         div(class="content")
             form(id="editCustomerDetails" action="/customers" method="POST")
                 h4 Mobile Number
-                input(type="text" name="mobileNumber" value=`${data.mobileNumber||""}`)
+                input(type="number" name="mobileNumber" value=`${data.mobileNumber||""}`)
                 h4 Shop Name
                 input(type="text" name="customerName" value=`${data.shopName||""}`)
                 h4 Address
