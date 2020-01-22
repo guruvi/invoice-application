@@ -54,10 +54,9 @@ function setOrderSummaryDisplay(productList){
 }
 
 function removeProduct(count){
-    const hsnToRemove = document.getElementById("hsn_"+count).innerHTML;
     document.getElementById('product_'+count).remove();
     const productList = JSON.parse(document.getElementById("productJSON").value);
-    const newProductList = productList.filter(product => product.hsn !== hsnToRemove);
+    const newProductList = productList.filter(product => product.serial !== count);
     document.getElementById("productJSON").value = JSON.stringify(newProductList);
     setOrderSummaryDisplay(newProductList);
 }

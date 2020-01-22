@@ -45,6 +45,30 @@ const ordersAPI = (fastify, options, next) => {
         reply.view('/public/template/orderPrintForm.pug', {data: {}});
     });
 
+    fastify.get("/orders/reportForm", async (request, reply) => {
+        reply.view('/public/template/reportForm.pug', {data: {}});
+    });
+
+    fastify.get("/orders/report", async (request, reply) => {
+        const fromDate = request.query.fromDate;
+        const toDate = request.query.toDate;
+
+        const sql = SQL`SELECT
+                            order_number,
+                            bill_date,
+                            order_summary::json->'totalGST',
+                            order_summary
+                        FROM
+                            "order"
+                        WHERE
+                            bill_date_filter
+                        BETWEEN ${fromDate} AND ${toDate}`;
+        const response = await fastify.pg.query(sql);
+        console.log(response.rows);
+    });
+
+
+
     fastify.post("/orders/edit", async (request, reply) => {
         try{
             const shopMobileNumber = request.cookies.shopId;
