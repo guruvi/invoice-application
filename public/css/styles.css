@@ -8,6 +8,11 @@ body{
     color: red;
 }
 
+li{
+    margin: 0 0 30px 0;
+    font-size: 20px;
+}
+
 h4{
     color: red;
 }
