@@ -41,6 +41,19 @@ const ordersAPI = (fastify, options, next) => {
         reply.view('/public/template/editOrder.pug', {data: {}});
     });
 
+    fastify.get("/orders/numberchangeForm", async (request, reply) => {
+        let oldNumber = await generateOrderNumber();
+        reply.view('/public/template/numberchangeForm.pug', {data: { oldNumber: oldNumber -1, orderChange: false }});
+    });
+
+    fastify.post("/orders/orderNumberchange", async (request, reply) => {
+        fastify.orderNumber = parseInt(request.body.orderNumber) - 1;
+        let order = {};
+        console.log(fastify.orderNumber);
+        const oldNumber = fastify.orderNumber + 1;
+        reply.view('/public/template/order.pug', {data: { ...order, changedOrderNumber: oldNumber }});
+    });
+
     fastify.get("/orders/printForm", async (request, reply) => {
         reply.view('/public/template/orderPrintForm.pug', {data: {}});
     });

@@ -14,8 +14,10 @@ html(lang="en")
                 a(class="logo" href="/home" title="Babbelen")
                     img(id="headerLogo" src="../images/logo.png" title="Babbelen")
         div(class="content")
+            if data.changedOrderNumber
+                h3 New Order Number: A-#{data.changedOrderNumber}
             if data.orderNumber
-                h3 Order Number: B-#{data.orderNumber}
+                h3 Order Number: A-#{data.orderNumber}
             form(id="createOrder" action=`${data.orderNumber ? "/orders/edit" : "/orders"}` method="POST")
                 h4 Customer Mobile Number
                 input(type="text" name="customerMobileNumber" value=`${data.customerMobileNumber||""}`)

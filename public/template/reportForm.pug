@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet" type="text/css" media="screen" href="../css/styles.css")
+        title Home Page
+    body
+        header
+            div(class="container")
+                a(class="logo" href="/home" title="Babbelen")
+                    img(id="headerLogo" src="../images/logo.png" title="Babbelen")
+        div(id="content")
+            form(action="/orders/report" method="get" id="report")
+                h2 Generate Order Report
+                h4 From
+                input(type="date" name="fromDate")
+                h4 To
+                input(type="date" name="toDate")
+                br
+                button(onclick='document.getElementById("report").submit();') Generate Report
+                br
+        footer
+            br
+            span(class="author") Author: GuruVi
+            br
+            span(class="copyrights") Babbellen &copy;All Rights reserved.

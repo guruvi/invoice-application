@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet" type="text/css" media="screen" href="../css/styles.css")
+        title Home Page
+    body
+        header
+            div(class="container")
+                a(class="logo" href="/home" title="Babbelen")
+                    img(id="headerLogo" src="../images/logo.png" title="Babbelen")
+        div(id="content")
+            form(action="/orders/orderNumberchange" method="POST" id="orderNumberChange")
+                if !data.orderChange
+                  h2 Change Order Number
+                  h4 Older Order Number is : #{data.oldNumber}
+                  h4 Enter new order number to start with:
+                  input(type="text" name="orderNumber")
+                  br
+                  button(onclick='document.getElementById("orderNumberChange").submit();') Change Order
+                  br
+                if data.orderChange
+                  h2 Order Number Changed succesfully!!
+                  h4 New Order Number will start with : #{data.oldNumber}
+                    
+        footer
+            br
+            span(class="author") Author: GuruVi
+            br
+            span(class="copyrights") Babbellen &copy;All Rights reserved.
