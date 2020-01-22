@@ -23,7 +23,7 @@ html(lang="en")
             span(style="float:right;")
               b Customer:
             br 
-          span Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#{data.order.billDate}
+          span Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#{data.order.billDate.split("-")[2]}-#{data.order.billDate.split("-")[1]}-#{data.order.billDate.split("-")[0]}
           b Terms
         div(id="billingAddress" style="padding: 0px 5px; display: inline-grid;width: 60%;word-wrap: break-word ;border-left: solid 1px #000;")
           span #{data.customer.customerName}
