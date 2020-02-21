@@ -72,8 +72,8 @@ html(lang="en")
             td
             td
             td
-            td(style="text-align: right;") #{data.order.orderSummary.sgst}
-            td(style="text-align: right;") #{data.order.orderSummary.cgst}
+            td(style="text-align: right;") #{`${(data.order.orderSummary.sgst).toFixed(2)}`}
+            td(style="text-align: right;") #{`${(data.order.orderSummary.cgst).toFixed(2)}`}
             td(style="text-align: right;") #{data.order.orderSummary.totalBeforeRoundOff}
       div(id="amtSection" style="border-style: solid; border-width: 0px 1px 1px 1px;")
         div(style="width: 50%; display: inline-block; border-style: solid; border-width: 0px 1px 0px 0px;") Rupees: #{data.totalValueInText}
@@ -81,7 +81,7 @@ html(lang="en")
           b Total Value before GST
         div(style="display: inline-block; width: 19%; text-align: right;") #{data.order.orderSummary.totalValueBeforeGST}
       div(id="taxSection" style="height: 70px; border-style: solid; border-width: 0px 1px 1px 1px;")
-        div(id="gstSplitSection" style="width: 50%; display: inline-block; border-style: solid; border-width: 0px 1px 0px 0px; ") GST 18% on(#{data.order.orderSummary.totalValueBeforeGST})- SGST 9.00%- #{data.order.orderSummary.sgst}- CGST 9.00%- #{data.order.orderSummary.cgst}
+        div(id="gstSplitSection" style="width: 50%; display: inline-block; border-style: solid; border-width: 0px 1px 0px 0px; ") GST 18% on(#{data.order.orderSummary.totalValueBeforeGST})- SGST 9.00%- #{`${(data.order.orderSummary.sgst).toFixed(2)}`}- CGST 9.00%- #{`${(data.order.orderSummary.cgst).toFixed(2)}`}
         div(style="display: inline-block; width: 30%; border-style: solid; border-width: 0px 1px 0px 0px; text-align: right;") Total GST Tax
           br
           span Round off
