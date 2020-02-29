@@ -49,11 +49,38 @@ const customerAPI = (fastify, options, next) => {
         return reply.view('/public/template/home.pug', { data: ""});        
     });
 
+    fastify.get("/editCustomers", async (request, reply)=>{
+        const shopId = request.cookies.shopId;
+        return reply.view('/public/template/editCustomer.pug', { data: shopId } );
+    });
+
     fastify.get("/customers", async (request, reply)=>{
         const shopId = request.cookies.shopId;
-        const data = {  shopId };
-        return reply.view('/public/template/customerDetails.pug', { data: {shopId} } );        
+        const customerMobileNumber = request.query.mobileNumber;
+        console.log(customerMobileNumber);
+        const customerData = await getCustomerData(customerMobileNumber,shopId);
+        console.log(customerData);
+        return reply.view('/public/template/customerDetails.pug', { data: {...shopId, ...customerData} } );
     });
+
+    const getCustomerData = async (mobileNumber, shopId) => {
+        try{
+            const query = sql`SELECT 
+                shop_mobile_number,
+                mobile_number,
+                customer_name,
+                address,
+                city,
+                gstin,
+                email
+            FROM customer WHERE mobile_number = ${mobileNumber} AND
+            shop_mobile_number = ${shopId}`;
+            const result = await fastify.pg.query(query);
+            return result.rowCount > 0 ? result.rows[0] : false;
+        } catch(err) {
+            fastify.log.error(err);
+        }
+    };
 
     const validate = async (shopId) => {
         try{
