@@ -67,10 +67,12 @@ function editProduct(count){
     const qty  = document.getElementById("qty_"+count).innerHTML;
     const productName = document.getElementById("name_"+count).innerHTML;
     const rate = document.getElementById("rate_"+count).innerHTML;
+    const gst = document.getElementById("gst_"+count).innerHTML;
+    const includingGST = rate*(1+gst/100);
     document.getElementById("hsn").value = hsn;
     document.getElementById("productName").value = productName;
     document.getElementById("qty").value = qty;
-    document.getElementById("rate").value = rate;
+    document.getElementById("rate").value = includingGST;
     document.getElementById("serial").value = count;
     document.getElementById('edit').style.display = "block";
     document.getElementById('add').style.display = "none";
@@ -169,9 +171,10 @@ function calculateTax(){
     const rate = document.getElementById("rate").value;
     const qty = document.getElementById("qty").value;
     const gstPercent = document.getElementById("gstPercent").value;
-    document.getElementById("sgstAmt").value= (qty*rate*((gstPercent/2)/100)).toFixed(2);
-    document.getElementById("cgstAmt").value= (qty*rate*((gstPercent/2)/100)).toFixed(2);
-    document.getElementById("total").value= (qty*rate*((gstPercent/2)/100)*2 + qty*rate).toFixed(2);
+    const gstDivide = 1 + gstPercent/100;
+    document.getElementById("sgstAmt").value= (qty*(rate/gstDivide)*((gstPercent/2)/100)).toFixed(2);
+    document.getElementById("cgstAmt").value= (qty*(rate/gstDivide)*((gstPercent/2)/100)).toFixed(2);
+    document.getElementById("total").value= (qty*rate).toFixed(2);
 }
 
 function updateProductData(){
@@ -198,6 +201,8 @@ function getProductData() {
     const qty = document.getElementById("qty").value;
     const rate = document.getElementById("rate").value;
     const gstPercent = document.getElementById("gstPercent").value;
+    const gst = gstPercent/100;
+    const actualRate = (rate/(1+gst)).toFixed(2);
     const cgstAmt = document.getElementById("cgstAmt").value;
     const sgstAmt = document.getElementById("sgstAmt").value;
     const total = document.getElementById("total").value;
@@ -206,7 +211,7 @@ function getProductData() {
         hsn,
         productName,
         qty,
-        rate,
+        rate: actualRate,
         gstPercent,
         cgstAmt,
         sgstAmt,
