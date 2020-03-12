@@ -8,15 +8,17 @@ const ordersAPI = (fastify, options, next) => {
     fastify.post("/orders", async (request, reply) => {
         try{
             const shopMobileNumber = request.cookies.shopId;
-            const customerMobileNumber = request.body.customerMobileNumber;
+            const gstin = request.body.gstin;
             const billDate = request.body.billDate;
+            const billType = request.body.billType;
             const productDetails = request.body.productJSON;
             const orderSummary = request.body.orderSummary;
             const billDateFilter = request.body.billDate;
             const order = {
                 shopMobileNumber,
+                billType,
                 billDate,
-                customerMobileNumber,
+                gstin,
                 productDetails: JSON.parse(productDetails),
                 orderSummary,
                 billDateFilter
@@ -33,7 +35,6 @@ const ordersAPI = (fastify, options, next) => {
         if (request.query.orderNumber){
             order = await getByOrderNumber(request.query.orderNumber);
         }
-        console.log(order);
         reply.view('/public/template/order.pug', {data: { ...order, mode: request.query.mode }});
     });
 
@@ -49,7 +50,6 @@ const ordersAPI = (fastify, options, next) => {
     fastify.post("/orders/orderNumberchange", async (request, reply) => {
         fastify.orderNumber = parseInt(request.body.orderNumber) - 1;
         let order = {};
-        console.log(fastify.orderNumber);
         const oldNumber = fastify.orderNumber + 1;
         reply.view('/public/template/order.pug', {data: { ...order, changedOrderNumber: oldNumber }});
     });
@@ -77,7 +77,6 @@ const ordersAPI = (fastify, options, next) => {
                             bill_date_filter
                         BETWEEN ${fromDate} AND ${toDate}`;
         const response = await fastify.pg.query(sql);
-        console.log(response.rows);
     });
 
 
@@ -85,7 +84,8 @@ const ordersAPI = (fastify, options, next) => {
     fastify.post("/orders/edit", async (request, reply) => {
         try{
             const shopMobileNumber = request.cookies.shopId;
-            const customerMobileNumber = request.body.customerMobileNumber;
+            const gstin = request.body.gstin;
+            const billType = request.body.billType;
             const billDate = request.body.billDate;
             const productDetails = request.body.productJSON;
             const orderNumber = request.body.orderNumber;
@@ -94,7 +94,8 @@ const ordersAPI = (fastify, options, next) => {
             const order = {
                 shopMobileNumber,
                 billDate,
-                customerMobileNumber,
+                billType,
+                gstin,
                 productDetails: JSON.parse(productDetails),
                 orderSummary,
                 billDateFilter
@@ -111,7 +112,8 @@ const ordersAPI = (fastify, options, next) => {
             const sql = SQL`UPDATE
                             "order" set
                             bill_date = ${order.billDate},
-                            customer_mobile_number = ${order.customerMobileNumber},
+                            bill_type = ${order.billType},
+                            gstin = ${order.gstin},
                             product_details = ${order.productDetails},
                             order_summary = ${order.orderSummary},
                             bill_date_filter = ${order.billDateFilter}
@@ -129,7 +131,7 @@ const ordersAPI = (fastify, options, next) => {
         const orderNumber = request.query.orderNumber;
         order = await getByOrderNumber(orderNumber);
         const shopDetails = await fastify.shopRepository.validate(order.shopMobileNumber);
-        const customerDetails = await fastify.customerRepository.validate(order.customerMobileNumber);
+        const customerDetails = await fastify.customerRepository.validate(order.gstin);
         const data = 
             { 
                 order, 
@@ -148,9 +150,10 @@ const ordersAPI = (fastify, options, next) => {
         const sql = SQL`
                     SELECT 
                         order_number,
+                        bill_type,
                         shop_mobile_number,
                         bill_date,
-                        customer_mobile_number,
+                        gstin,
                         product_details,
                         order_summary
                     FROM "order" where order_number = ${orderNumber}`;
@@ -186,7 +189,8 @@ const ordersAPI = (fastify, options, next) => {
                                 order_number,
                                 shop_mobile_number,
                                 bill_date,
-                                customer_mobile_number,
+                                bill_type,
+                                gstin,
                                 product_details,
                                 order_summary,
                                 bill_date_filter
@@ -196,7 +200,8 @@ const ordersAPI = (fastify, options, next) => {
                                 ${orderNumber},
                                 ${order.shopMobileNumber || null},
                                 ${order.billDate || null},
-                                ${order.customerMobileNumber || null},
+                                ${order.billType || null},
+                                ${order.gstin || null},
                                 ${order.productDetails || []},
                                 ${orderSummary || {}},
                                 ${order.billDateFilter}
