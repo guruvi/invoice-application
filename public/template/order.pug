@@ -19,10 +19,18 @@ html(lang="en")
             if data.orderNumber
                 h3 Order Number: A-#{data.orderNumber}
             form(id="createOrder" action=`${data.orderNumber ? "/orders/edit" : "/orders"}` method="POST")
-                h4 Customer Mobile Number
-                input(type="number" name="customerMobileNumber" value=`${data.customerMobileNumber||""}`)
+                h4 GSTIN
+                input(type="text" maxlength="15" name="gstin" value=`${data.gstin||""}`)
                 h4 Bill Date
                 input(type="date" name="billDate" value=`${data.billDate||""}`)
+                h4 Bill Type
+                select(id="cars" name="billType")
+                    if data.billType === 'Credit Bill'
+                        option(value="Cash Bill") Cash Bill
+                        option(value="Credit Bill" selected) Credit Bill
+                    else
+                        option(value="Cash Bill") Cash Bill
+                        option(value="Credit Bill") Credit Bill
                 if data.orderNumber
                     input(type="hidden" id="productJSON" name="productJSON" value=`${JSON.stringify(data.productDetails)}`)
                     input(type="hidden" name ="orderNumber" value = `${data.orderNumber}`)

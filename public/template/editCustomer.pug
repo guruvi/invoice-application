@@ -13,8 +13,8 @@ html(lang="en")
                     img(id="headerLogo" src="../images/logo.png" title="Babbelen")
         div(id="content")
             form(action="/customers" method="get" id="editOrder")
-                h4 Customer Mobile Number
-                input(type="number" name="mobileNumber")
+                h4 GSTIN
+                input(type="text" maxlength="15" name="gstin")
                 input(type="hidden" name="mode" value="edit")
                 br
                 button(onclick='document.getElementById("editOrder").submit();') Edit Customer Data

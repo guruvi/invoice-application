@@ -56,14 +56,14 @@ const customerAPI = (fastify, options, next) => {
 
     fastify.get("/customers", async (request, reply)=>{
         const shopId = request.cookies.shopId;
-        const customerMobileNumber = request.query.mobileNumber;
-        console.log(customerMobileNumber);
-        const customerData = await getCustomerData(customerMobileNumber,shopId);
+        const gstin = request.query.gstin;
+        console.log(gstin);
+        const customerData = await getCustomerData(gstin,shopId);
         console.log(customerData);
         return reply.view('/public/template/customerDetails.pug', { data: {...shopId, ...customerData} } );
     });
 
-    const getCustomerData = async (mobileNumber, shopId) => {
+    const getCustomerData = async (gstin, shopId) => {
         try{
             const query = sql`SELECT 
                 shop_mobile_number,
@@ -73,7 +73,7 @@ const customerAPI = (fastify, options, next) => {
                 city,
                 gstin,
                 email
-            FROM customer WHERE mobile_number = ${mobileNumber} AND
+            FROM customer WHERE gstin = ${gstin} AND
             shop_mobile_number = ${shopId}`;
             const result = await fastify.pg.query(query);
             return result.rowCount > 0 ? result.rows[0] : false;
@@ -82,7 +82,7 @@ const customerAPI = (fastify, options, next) => {
         }
     };
 
-    const validate = async (shopId) => {
+    const validate = async (gstin) => {
         try{
             const query = sql`SELECT 
                 shop_mobile_number,
@@ -92,7 +92,7 @@ const customerAPI = (fastify, options, next) => {
                 city,
                 gstin,
                 email
-            FROM customer WHERE mobile_number = ${shopId}`;
+            FROM customer WHERE gstin = ${gstin}`;
             const result = await fastify.pg.query(query);
             return result.rowCount > 0 ? result.rows[0] : false;
         } catch(err) {
