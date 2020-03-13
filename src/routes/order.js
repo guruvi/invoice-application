@@ -26,8 +26,8 @@ const ordersAPI = (fastify, options, next) => {
             const response = await insert(order);
             reply.view('/public/template/order.pug', {data: {...response}});
         } catch (error){
-            console.log(error);
         }
+        console.log(err);
     });
 
     fastify.get("/orders", async (request, reply) => {
@@ -103,8 +103,8 @@ const ordersAPI = (fastify, options, next) => {
             const response = await update(orderNumber, order);
             reply.view('/public/template/order.pug', {data: {...response}});
         } catch (error){
-            console.log(error);
         }
+        console.log(err);
     });
 
     const update = async (orderNumber, order) => {
