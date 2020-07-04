@@ -22,7 +22,9 @@ html(lang="en")
       div(id="billing" style="height: auto;border-style: solid;border-width: 0px 1px 1px 1px;")  
         div(id="billDetails" style="padding: 0px 5px; width: 35%; display: inline-grid; height: 100%;position: relative;")
           div
-            b Bill No&nbsp;&nbsp;&nbsp;A/#{data.order.orderNumber}
+            b Bill No: &nbsp;&nbsp;&nbsp;A/#{data.order.orderNumber}
+            br
+            b PO NUMBER: #{data.order.poNumber}
             span(style="float:right;")
               b Customer:
             br 
@@ -33,7 +35,6 @@ html(lang="en")
           span #{data.customer.address} #{data.customer.city}
           b
           span GSTIN: #{data.customer.gstin}
-          div MOBILE NO: #{data.customer.mobileNumber}
       div(id="productArea" style="border-style: solid; border-width: 0px 1px 1px 1px;")
         table(style="width: 100%;")
           tr 
@@ -108,4 +109,3 @@ html(lang="en")
           br
           br
           br
-
