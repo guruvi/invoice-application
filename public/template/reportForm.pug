@@ -18,6 +18,13 @@ html(lang="en")
                 input(type="date" name="fromDate")
                 h4 To
                 input(type="date" name="toDate")
+                h4 GSTIN (Enter GST of a customer)
+                input(type="text" name="gstin")
+                br
+                h4 Bill Type
+                select(id="cars" name="billType")
+                    option(value="Cash Bill" selected) Cash Bill
+                    option(value="Credit Bill") Credit Bill
                 br
                 button(onclick='document.getElementById("report").submit();') Generate Report
                 br
