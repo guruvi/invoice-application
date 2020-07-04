@@ -9,6 +9,7 @@ const ordersAPI = (fastify, options, next) => {
         try{
             const shopMobileNumber = request.cookies.shopId;
             const gstin = request.body.gstin;
+            const poNumber = request.body.poNumber;
             const billDate = request.body.billDate;
             const billType = request.body.billType;
             const productDetails = request.body.productJSON;
@@ -17,6 +18,7 @@ const ordersAPI = (fastify, options, next) => {
             const order = {
                 shopMobileNumber,
                 billType,
+                poNumber,
                 billDate,
                 gstin,
                 productDetails: JSON.parse(productDetails),
@@ -87,6 +89,7 @@ const ordersAPI = (fastify, options, next) => {
             const gstin = request.body.gstin;
             const billType = request.body.billType;
             const billDate = request.body.billDate;
+            const poNumber = request.body.poNumber;
             const productDetails = request.body.productJSON;
             const orderNumber = request.body.orderNumber;
             const orderSummary = request.body.orderSummary;
@@ -98,7 +101,8 @@ const ordersAPI = (fastify, options, next) => {
                 gstin,
                 productDetails: JSON.parse(productDetails),
                 orderSummary,
-                billDateFilter
+                billDateFilter,
+                poNumber
             };
             const response = await update(orderNumber, order);
             reply.view('/public/template/order.pug', {data: {...response}});
@@ -114,6 +118,7 @@ const ordersAPI = (fastify, options, next) => {
                             bill_date = ${order.billDate},
                             bill_type = ${order.billType},
                             gstin = ${order.gstin},
+                            po_number = ${order.poNumber},
                             product_details = ${order.productDetails},
                             order_summary = ${order.orderSummary},
                             bill_date_filter = ${order.billDateFilter}
@@ -153,6 +158,7 @@ const ordersAPI = (fastify, options, next) => {
                         bill_type,
                         shop_mobile_number,
                         bill_date,
+                        po_number,
                         gstin,
                         product_details,
                         order_summary
@@ -190,6 +196,7 @@ const ordersAPI = (fastify, options, next) => {
                                 shop_mobile_number,
                                 bill_date,
                                 bill_type,
+                                "po_number",
                                 gstin,
                                 product_details,
                                 order_summary,
@@ -201,6 +208,7 @@ const ordersAPI = (fastify, options, next) => {
                                 ${order.shopMobileNumber || null},
                                 ${order.billDate || null},
                                 ${order.billType || null},
+                                ${order.poNumber || null},
                                 ${order.gstin || null},
                                 ${order.productDetails || []},
                                 ${orderSummary || {}},
