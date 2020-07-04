@@ -24,9 +24,6 @@ html(lang="en")
                 input(type="text" name="city" value=`${data.city||""}`)
                 h4 email
                 input(type="text" name="email" value=`${data.email||""}`)
-                h4 Mobile Number
-                input(type="number" name="mobileNumber" value=`${data.mobileNumber||""}`)
                 input(type="hidden" name="shopMobileNumber" value =`${data.shopId}`)
                 br  
                 button(onclick='document.getElementById("editCustomerDetails").submit();') Save
-        
