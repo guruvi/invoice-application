@@ -31,6 +31,8 @@ html(lang="en")
                     else
                         option(value="Cash Bill") Cash Bill
                         option(value="Credit Bill") Credit Bill
+                h4 PO Number
+                input(type="text" id="poNumber" name="poNumber" value =`${data.poNumber||""}`)
                 if data.orderNumber
                     input(type="hidden" id="productJSON" name="productJSON" value=`${JSON.stringify(data.productDetails)}`)
                     input(type="hidden" name ="orderNumber" value = `${data.orderNumber}`)
