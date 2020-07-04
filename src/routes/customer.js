@@ -12,7 +12,7 @@ const customerAPI = (fastify, options, next) => {
         const city = request.body.city || null;
         const gstin = request.body.gstin || null;
         const email = request.body.email || null;
-        const uuid = uuidv5(`${mobileNumber}-${shopMobileNumber}`, uuidv5.URL);
+        const uuid = uuidv5(`${request.body.gstin}-${shopMobileNumber}`, uuidv5.URL);
 
         const query = sql`INSERT INTO customer 
             (
@@ -29,7 +29,7 @@ const customerAPI = (fastify, options, next) => {
             (
                 ${uuid},
                 ${customerName},
-                ${mobileNumber},
+                ${gstin},
                 ${shopMobileNumber},
                 ${address},
                 ${city},
@@ -38,7 +38,7 @@ const customerAPI = (fastify, options, next) => {
             ) 
             ON CONFLICT (uuid) DO UPDATE SET
                 customer_name = ${customerName},
-                mobile_number = ${mobileNumber},
+                mobile_number = ${gstin},
                 shop_mobile_number = ${shopMobileNumber},
                 address = ${address},
                 city = ${city},
