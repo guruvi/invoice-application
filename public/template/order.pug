@@ -15,14 +15,14 @@ html(lang="en")
                     img(id="headerLogo" src="../images/logo.png" title="Babbelen")
         div(class="content")
             if data.changedOrderNumber
-                h3 New Order Number: A-#{data.changedOrderNumber}
+                h3 New Order Number: FY-#{data.billYear}-#{data.changedOrderNumber}
             if data.orderNumber
-                h3 Order Number: A-#{data.orderNumber}
+                h3 Order Number: FY#{data.billYear}-#{data.orderNumber}
             form(id="createOrder" action=`${data.orderNumber ? "/orders/edit" : "/orders"}` method="POST")
                 h4 GSTIN
                 input(type="text" maxlength="15" name="gstin" value=`${data.gstin||""}`)
                 h4 Bill Date
-                input(type="date" name="billDate" value=`${data.billDate||""}`)
+                input(type="date" name="billDate" value=`${data.billDate||new Date()}`)
                 h4 Bill Type
                 select(id="cars" name="billType")
                     if data.billType === 'Credit Bill'

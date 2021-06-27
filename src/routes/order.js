@@ -26,7 +26,7 @@ const ordersAPI = (fastify, options, next) => {
                 billDateFilter
             };
             const response = await insert(order);
-            reply.view('/public/template/order.pug', {data: {...response}});
+            return reply.view('/public/template/order.pug', {data: {...response}});
         } catch (error){
             console.log(error);
         }
@@ -37,31 +37,31 @@ const ordersAPI = (fastify, options, next) => {
         if (request.query.orderNumber){
             order = await getByOrderNumber(request.query.orderNumber);
         }
-        reply.view('/public/template/order.pug', {data: { ...order, mode: request.query.mode }});
+        return reply.view('/public/template/order.pug', {data: { ...order, mode: request.query.mode }});
     });
 
     fastify.get("/orders/edit", async (request, reply) => {
-        reply.view('/public/template/editOrder.pug', {data: {}});
+        return reply.view('/public/template/editOrder.pug', {data: {}});
     });
 
     fastify.get("/orders/numberchangeForm", async (request, reply) => {
         let oldNumber = await generateOrderNumber();
-        reply.view('/public/template/numberchangeForm.pug', {data: { oldNumber: oldNumber -1, orderChange: false }});
+        return reply.view('/public/template/numberchangeForm.pug', {data: { oldNumber: oldNumber -1, orderChange: false }});
     });
 
     fastify.post("/orders/orderNumberchange", async (request, reply) => {
         fastify.orderNumber = parseInt(request.body.orderNumber) - 1;
         let order = {};
         const oldNumber = fastify.orderNumber + 1;
-        reply.view('/public/template/order.pug', {data: { ...order, changedOrderNumber: oldNumber }});
+        return reply.view('/public/template/order.pug', {data: { ...order, changedOrderNumber: oldNumber }});
     });
 
     fastify.get("/orders/printForm", async (request, reply) => {
-        reply.view('/public/template/orderPrintForm.pug', {data: {}});
+        return reply.view('/public/template/orderPrintForm.pug', {data: {}});
     });
 
     fastify.get("/orders/reportForm", async (request, reply) => {
-        reply.view('/public/template/reportForm.pug', {data: {}});
+        return reply.view('/public/template/reportForm.pug', {data: {}});
     });
 
     fastify.get("/orders/report", async (request, reply) => {
@@ -70,12 +70,14 @@ const ordersAPI = (fastify, options, next) => {
         const gstin = request.query.gstin;
         const billType = request.query.billType;
 
-        console.log(gstin)
+        
+
         const sql = SQL`SELECT
-                            order_number,
+                            concat('FY',bill_year,'-',order_number) as order_number,
                             bill_date,
                             gstin,
-                            order_summary::json->'totalAfterRoundOff' as Amount
+                            order_summary::json->'totalAfterRoundOff' as Amount,
+                            bill_year
                         FROM
                             "order"
                         WHERE `
@@ -94,7 +96,7 @@ const ordersAPI = (fastify, options, next) => {
             totalValueInText: writtenNumber(sum),
             totalValue: sum.toFixed(2)
         };
-        reply.view('/public/template/printReport.pug', {data});
+        return reply.view('/public/template/printReport.pug', {data});
     });
 
 
@@ -121,7 +123,7 @@ const ordersAPI = (fastify, options, next) => {
                 poNumber
             };
             const response = await update(orderNumber, order);
-            reply.view('/public/template/order.pug', {data: {...response}});
+            return reply.view('/public/template/order.pug', {data: {...response}});
         } catch (error){
             console.log(error);
         }
@@ -161,7 +163,7 @@ const ordersAPI = (fastify, options, next) => {
                 totalValueInText: writtenNumber(order.orderSummary.totalAfterRoundOff)
             };
         if(order) {
-            reply.view('/public/template/orderPrint.pug', { data });                
+            return reply.view('/public/template/orderPrint.pug', { data });                
         } else{
             
         }
@@ -177,34 +179,53 @@ const ordersAPI = (fastify, options, next) => {
                         po_number,
                         gstin,
                         product_details,
-                        order_summary
+                        order_summary,
+                        bill_year
                     FROM "order" where order_number = ${orderNumber}`;
         const result = await fastify.pg.query(sql);
         return result.rows[0];
     };
 
-    const generateOrderNumber = async () => {
+    const generateOrderNumber = async (billYear) => {
+        
+        if(!billYear){
+            date = new Date()
+            billYear = date.getFullYear()
+            month = date.getMonth()
+            year = date.getYear();
+            if(month<3){
+                billYear = year-1;
+            }
+        }
         const sql = SQL`SELECT
                             max(order_number) AS "orderNumber"
                         FROM
-                            "order"`;
+                            "order" where bill_year= ${billYear}`;
         const response = await fastify.pg.query(sql);
         const orderNumber = response.rowCount > 0 ? (response.rows[0].orderNumber+1) : 1;
-        if(!fastify.hasDecorator("orderNumber")){
-            fastify.decorate("orderNumber", orderNumber);
-        }
+        // if(!fastify.hasDecorator("orderNumber")){
+        //     fastify.decorate("orderNumber", orderNumber);
+        // }
         return orderNumber;
     }
 
     const insert = async (order) => {
         const orderSummary = order.orderSummary;
         let orderNumber = 0;
+
+        billYear = order.billDateFilter.split("-")[0]
+        bill_month = order.billDateFilter.split("-")[1]
+        
+        if (bill_month < 4) billYear = parseInt(bill_year) - 1;
+        order.billYear = billYear
+
         if(isNaN(fastify.orderNumber)){
-            orderNumber = await generateOrderNumber();
+            orderNumber = await generateOrderNumber(billYear);
         } else {
             orderNumber = ++fastify.orderNumber;
             fastify.orderNumber = orderNumber;
         }
+
         try{
             const sql = SQL`INSERT INTO "order" 
                             (
@@ -216,7 +237,8 @@ const ordersAPI = (fastify, options, next) => {
                                 gstin,
                                 product_details,
                                 order_summary,
-                                bill_date_filter
+                                bill_date_filter,
+                                bill_year
                             )
                             values 
                             (
@@ -228,7 +250,8 @@ const ordersAPI = (fastify, options, next) => {
                                 ${order.gstin || null},
                                 ${order.productDetails || []},
                                 ${orderSummary || {}},
-                                ${order.billDateFilter}
+                                ${order.billDateFilter},
+                                ${billYear}
                             )
                             RETURNING *`;
             const orders = await fastify.pg.query(sql);

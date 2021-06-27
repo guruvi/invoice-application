@@ -1,6 +1,6 @@
 const fastifyPlugin = require("fastify-plugin");
 const sql = require("@nearform/sql");
-const uuidv5 = require("uuid/v5");
+const { v5: uuidv5 } = require('uuid');
 
 const customerAPI = (fastify, options, next) => {
 
