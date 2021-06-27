@@ -85,7 +85,7 @@ const ordersAPI = (fastify, options, next) => {
         if(billType) sql.append(SQL`bill_type = ${billType} AND `)
         sql.append(SQL` bill_date_filter 
                     BETWEEN ${fromDate} AND ${toDate} 
-                    ORDER BY bill_date_filter asc`);
+                    ORDER BY order_number asc`);
         const response = await fastify.pg.query(sql);
         const shopDetails = await fastify.shopRepository.validate(request.cookies.shopId);
         let sum = 0;
