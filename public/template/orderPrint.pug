@@ -5,7 +5,7 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(http-equiv="X-UA-Compatible", content="ie=edge")
     title Print document
-  body
+  body(style="font-size: 18px;")
     div(id="body" style="width: 1000px;")
       div(id="billHeader" style="padding: 10px; border-style: solid; border-width: 1px;")
         div(style="text-align: center;")
@@ -84,7 +84,7 @@ html(lang="en")
         div(style="display: inline-block; width: 30%; border-style: solid; border-width: 0px 1px 0px 0px; text-align: center;")
           b Total Value before GST
         div(style="display: inline-block; width: 19%; text-align: right;") #{data.order.orderSummary.totalValueBeforeGST}
-      div(id="taxSection" style="height: 70px; border-style: solid; border-width: 0px 1px 1px 1px;")
+      div(id="taxSection" style="height: 90px; border-style: solid; border-width: 0px 1px 1px 1px;")
         div(id="gstSplitSection" style="width: 50%; display: inline-block; border-style: solid; border-width: 0px 1px 0px 0px; ") GST 18% on(#{data.order.orderSummary.totalValueBeforeGST})- SGST 9.00%- #{`${(data.order.orderSummary.sgst).toFixed(2)}`}- CGST 9.00%- #{`${(data.order.orderSummary.cgst).toFixed(2)}`}
         div(style="display: inline-block; width: 30%; border-style: solid; border-width: 0px 1px 0px 0px; text-align: right;") Total GST Tax
           br
@@ -99,7 +99,7 @@ html(lang="en")
           br
           b #{data.order.orderSummary.totalAfterRoundOff}
       div(id="billFooter" style="height: auto;border-style: solid; border-width: 0px 1px 1px 1px;")
-        div(id="bankDetails" style="padding: 0px 5px; width: 49%; display: inline-grid; height: 100%;position: relative;")
+        div(id="bankDetails" style="padding: 16px 5px; width: 49%; display: inline-grid; height: 100%;position: relative;")
           div
             b BANK NAME : #{data.shop.bankName}
           div
