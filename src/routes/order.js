@@ -35,7 +35,8 @@ const ordersAPI = (fastify, options, next) => {
     fastify.get("/orders", async (request, reply) => {
         let order = {};
         if (request.query.orderNumber){
-            order = await getByOrderNumber(request.query.orderNumber);
+            billYear = request.query.billYear;
+            order = await getByOrderNumber(request.query.orderNumber, billYear);
         }
         return reply.view('/public/template/order.pug', {data: { ...order, mode: request.query.mode }});
     });
@@ -152,7 +153,9 @@ const ordersAPI = (fastify, options, next) => {
 
     fastify.get("/orders/print", async(request, reply)=> {
         const orderNumber = request.query.orderNumber;
-        order = await getByOrderNumber(orderNumber);
+        const billYear = request.query.billYear;
+    
+        order = await getByOrderNumber(orderNumber, billYear);
         const shopDetails = await fastify.shopRepository.validate(order.shopMobileNumber);
         const customerDetails = await fastify.customerRepository.validate(order.gstin);
         const data = 
@@ -169,7 +172,7 @@ const ordersAPI = (fastify, options, next) => {
         }
     });
 
-    const getByOrderNumber = async (orderNumber) => {
+    const getByOrderNumber = async (orderNumber, billYear) => {
         const sql = SQL`
                     SELECT 
                         order_number,
@@ -181,7 +184,8 @@ const ordersAPI = (fastify, options, next) => {
                         product_details,
                         order_summary,
                         bill_year
-                    FROM "order" where order_number = ${orderNumber}`;
+                    FROM "order" where order_number = ${orderNumber}
+                    and bill_year = ${billYear}`;
         const result = await fastify.pg.query(sql);
         return result.rows[0];
     };
