@@ -220,7 +220,7 @@ const ordersAPI = (fastify, options, next) => {
         billYear = order.billDateFilter.split("-")[0]
         bill_month = order.billDateFilter.split("-")[1]
         
-        if (bill_month < 4) billYear = parseInt(bill_year) - 1;
+        if (bill_month < 4) billYear = parseInt(billYear) - 1;
         order.billYear = billYear
 
         if(isNaN(fastify.orderNumber)){
